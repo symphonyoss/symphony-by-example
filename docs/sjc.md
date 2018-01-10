@@ -77,4 +77,4 @@ Example of instantiating the client below: (see [Creating a session](https://git
 
 Once initiated the SymphonyClient can be used to access all clients and services.
 
-Next topic: [Creating a session](https://github.com/symphonyoss/symphony-java-client/wiki/Creating-a-session)
+Next topic: [Creating a session](sjc/CreatingSession.md)

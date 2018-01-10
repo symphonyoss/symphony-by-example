@@ -11,31 +11,56 @@ In order to obtain keys, the application requires the following:
 
 * **BOT Client Certificate** (p12), where the common name (CN=) is equal to the bot user name.  The certificate password is also required.
 * **Server Truststore file**, contains the certificate authority certs for all servers the application will connect to.  The truststore password is also required.
-* **Keymanager URL**, this could be both Symphony provided on the host POD or local HSM backed.
+* **Key Manager URL**, this could be both Symphony provided on the host POD or local HSM backed.
 * **Session Authorization URL**, where session tokens are generated
 
-The SDK makes it easy to generate an authorization model through use of the **AuthorizationClient**.
->
-
-    //Model holding generated session keys.
-    SymAuth symAuth;
-
-    //Init the Symphony authorization client, which requires both the key and session URL's.  In most cases,
-    //the same fqdn but different URLs.
-    AuthorizationClient authClient = new AuthorizationClient(
-    System.getProperty("sessionauth.url"),
-    System.getProperty("keyauth.url"));
+The SDK makes it easy to generate authorization tokens through use of the **AuthenticationClient**.  With this said, the fastest way is to both initialize and generate a client instance is using the **SymphonyClientConfig**.  This config will search for and load all required properties from properties file, jvm options or environment variables.
+The key properties are:
 
 
-    //Set the local keystores that hold the server CA and client certificates
-    authClient.setKeystores(
-    System.getProperty("truststore.file"),
-    System.getProperty("truststore.password"),
-    System.getProperty("certs.dir") + System.getProperty("bot.user") + ".p12",
-    System.getProperty("keystore.password"));
+    -Dsessionauth.url=https://(company name)-api.symphony.com/sessionauth
+    -Dkeyauth.url=https://(company name)-api.symphony.com/keyauth
 
-    //Create a SymAuth which holds both key and session tokens.  This will call the external service.
-    symAuth = authClient.authenticate();
+    -Duser.email=(Bot user email address)
+    -Duser.cert.password=(Bot user certificat password)
+    -Duser.cert.file=(Bot user p12 certificate file)
+
+    -Dtruststore.password=
+    -Dtruststore.file=(CA Root cert file)
+
+    -Dpod.url=https://(company name).symphony.com/pod
+    -Dagent.url=https://(local agent server fqdn):8446/agent
+
+If loading from a properties file use:
+
+    -Dsymphony.config.file=(config file)
+
+If using environment variables, set property names to uppercase and replace "." with "_"*:
+
+    user.cert.file => USER_CERT_FILE
+
+To create a session and initialize a client instance:
+
+
+     try {
+                //Create a bootstrap configuration, which will load properities for you..
+                SymphonyClientConfig symphonyClientConfig = new SymphonyClientConfig(true);
+
+
+                //Create a basic client instance
+                SymphonyClient symClient = SymphonyClientFactory.getClient(SymphonyClientFactory.TYPE.V4, symphonyClientConfig);
+
+
+            } catch (InitException e) {
+                logger.error("error", e);
+            }
+
+
+The client will automatically generate the tokens necessary to access both the POD and Agent Server.  If you need access to these tokens, there is an object called **SymAuth** which holds both the session and key manager tokens.  You can retrieve this object through the client:
+
+    SymAuth symAuth = symClient.getSymAuth();
+
+
 
 
 ### Using a custom HTTP Client
