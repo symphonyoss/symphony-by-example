@@ -1,7 +1,7 @@
 ---
-nav-sort: 500
+nav-sort: 110
 ---
-
+# Symphony Java Client
 
 The Symphony java client provides a real-time wrapper around the Symphony REST API's to simplify the creation of chat sessions, room access, presence, messaging and more... The client provides a set of logical services representing supported features of the Symphony platform. Services support real-time events through feature based listeners and communication objects. Access is not limited to the services as all underlying Symphony client implementations are exposed for advanced use or creation of your own service.
 
@@ -25,7 +25,7 @@ The SJC design is based on three layers.
 Nothing prevents a developer from using any layer directly, but it's highly recommended to use services vs lower level client implementations.
 
 The following diagram provides a high level design overview:
-![SJC Design](images/sjc-design.png)
+![SJC Design](sjc/images/sjc-design.png)
 
 
 ## Services Design Overview
@@ -42,7 +42,7 @@ Bot Chat and Room services can automatically construct these objects based on ex
 The MessageService also supports a general MessageListener callback for applications that are looking to consume all traffic. 
 
 
-![SJC Services Design Overview](images/sjc-services-overview.png)
+![SJC Services Design Overview](sjc/images/sjc-services-overview.png)
 
 
 ## SymphonyClient - Making it easy..
